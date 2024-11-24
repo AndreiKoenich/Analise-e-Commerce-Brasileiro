@@ -2,7 +2,9 @@ import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 
-DATABASE_URL = 'postgresql://postgres:123456@localhost/e_commerce'
+from execute_query import execute_sql
+
+DATABASE_URL = 'postgresql://postgres:admin@localhost/e_commerce'
 DATABASE_NAME = 'e_commerce'
 
 def create_tables(engine):
@@ -25,6 +27,21 @@ def create_tables(engine):
             geolocation_lng FLOAT,
             geolocation_city VARCHAR(255),
             geolocation_state VARCHAR(2)
+        );
+        """,
+        # forgot this one
+        # checar se está ok a definição da tabela
+        """
+        DROP TABLE IF EXISTS olist_order_items_dataset;
+        CREATE TABLE olist_order_items_dataset (
+            order_id VARCHAR(255),
+            order_item_id INT,
+            product_id VARCHAR(255),
+            seller_id VARCHAR(50),
+            shipping_limit_date TIMESTAMP,
+            price FLOAT,
+            freight_value FLOAT,
+            PRIMARY KEY (order_id, product_id)
         );
         """,
         """
@@ -95,7 +112,8 @@ def create_tables(engine):
     ]
 
     for query in create_table_queries:
-        engine.execute(query)
+        #engine.execute(query)
+        execute_sql(engine, query)
     print("Todas as nove tabelas foram criadas com sucesso!")
 
 def import_csv_to_postgres(csv_file, table_name, engine):
@@ -111,12 +129,14 @@ def import_data():
 
     create_tables(engine)
     
-    import_csv_to_postgres('olist_customers_dataset.csv', 'olist_customers_dataset', engine)
-    import_csv_to_postgres('olist_geolocation_dataset.csv', 'olist_geolocation_dataset', engine)
-    import_csv_to_postgres('olist_order_items_dataset.csv', 'olist_order_items_dataset', engine)
-    import_csv_to_postgres('olist_order_payments_dataset.csv', 'olist_order_payments_dataset', engine)
-    import_csv_to_postgres('olist_order_reviews_dataset.csv', 'olist_order_reviews_dataset', engine)
-    import_csv_to_postgres('olist_orders_dataset.csv', 'olist_orders_dataset', engine)
-    import_csv_to_postgres('olist_products_dataset.csv', 'olist_products_dataset', engine)
-    import_csv_to_postgres('olist_sellers_dataset.csv', 'olist_sellers_dataset', engine)
-    import_csv_to_postgres('product_category_name_translation.csv', 'product_category_name_translation', engine)
+    import_csv_to_postgres('CSV/olist_customers_dataset.csv', 'olist_customers_dataset', engine)
+    import_csv_to_postgres('CSV/olist_geolocation_dataset.csv', 'olist_geolocation_dataset', engine)
+    import_csv_to_postgres('CSV/olist_order_items_dataset.csv', 'olist_order_items_dataset', engine)
+    import_csv_to_postgres('CSV/olist_order_payments_dataset.csv', 'olist_order_payments_dataset', engine)
+    import_csv_to_postgres('CSV/olist_order_reviews_dataset.csv', 'olist_order_reviews_dataset', engine)
+    import_csv_to_postgres('CSV/olist_orders_dataset.csv', 'olist_orders_dataset', engine)
+    import_csv_to_postgres('CSV/olist_products_dataset.csv', 'olist_products_dataset', engine)
+    import_csv_to_postgres('CSV/olist_sellers_dataset.csv', 'olist_sellers_dataset', engine)
+    import_csv_to_postgres('CSV/product_category_name_translation.csv', 'product_category_name_translation', engine)
+
+    return engine
