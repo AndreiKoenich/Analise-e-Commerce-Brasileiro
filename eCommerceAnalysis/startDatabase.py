@@ -109,7 +109,7 @@ def create_tables(engine):
 
     for query in create_table_queries:
         engine.execute(query)
-    print("Todas as nove tabelas foram criadas com sucesso!")
+    print("Todas as nove tabelas foram criadas com sucesso.")
 
 def import_csv_to_postgres(csv_file, table_name, engine):
     df = pd.read_csv(csv_file)
@@ -120,7 +120,7 @@ def import_data():
     engine = create_engine(DATABASE_URL)
     if not database_exists(engine.url):
         create_database(engine.url)
-    print(f"Banco de dados {DATABASE_NAME} criado com sucesso!")
+    print(f"Banco de dados {DATABASE_NAME} inicializado com sucesso.")
 
     create_tables(engine)
     
