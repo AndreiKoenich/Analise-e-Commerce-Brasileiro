@@ -28,19 +28,6 @@ def create_tables(engine):
         );
         """,
         """
-        DROP TABLE IF EXISTS order_items_dataset;
-        CREATE TABLE order_items_dataset (
-            order_id VARCHAR(255),
-            order_item_id INT,
-            product_id VARCHAR(255),
-            seller_id VARCHAR(255),
-            shipping_limit_date TIMESTAMP,
-            price FLOAT,                              
-            freight_value FLOAT,
-            PRIMARY KEY (order_id, order_item_id)
-        );
-        """,
-        """
         DROP TABLE IF EXISTS olist_order_payments_dataset;
         CREATE TABLE olist_order_payments_dataset (
             order_id VARCHAR(255),
@@ -74,6 +61,19 @@ def create_tables(engine):
             order_delivered_carrier_date TIMESTAMP,
             order_delivered_customer_date TIMESTAMP,
             order_estimated_delivery_date TIMESTAMP
+        );
+        """,
+        """
+        DROP TABLE IF EXISTS order_items_dataset;
+        CREATE TABLE order_items_dataset (
+            order_id VARCHAR(255),
+            order_item_id INT,
+            product_id VARCHAR(255),
+            seller_id VARCHAR(255),
+            shipping_limit_date TIMESTAMP,
+            price FLOAT,                              
+            freight_value FLOAT,
+            PRIMARY KEY (order_id, order_item_id)
         );
         """,
         """
