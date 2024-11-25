@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, text
 
-# Consulta: produtos mais bem avaliados.
+# Consulta 1: produtos mais bem avaliados.
 def best_products(engine):
     state = state.upper()
     query = """
@@ -19,7 +19,7 @@ def best_products(engine):
     for row in result:
         print(row)
 
-# Consulta: produtos mais bem avaliados em uma região (all-time).
+# Consulta 2: produtos mais bem avaliados em uma região (all-time).
 def best_products(engine, state):
     state = state.upper()
     query = """
@@ -39,7 +39,7 @@ def best_products(engine, state):
     for row in result:
         print(row)
 
-# Consulta: categorias mais compradas em um ano/mês.
+# Consulta 3: categorias mais compradas em um ano/mês.
 def get_top_categories(year, month):
     query = """
         SELECT Produto.product_category_name, COUNT(*) AS total_compras
@@ -55,7 +55,7 @@ def get_top_categories(year, month):
         result = connection.execute(text(query), {"year": year, "month": month})
         return result.fetchall()
 
-# Consulta: estado com maior poder aquisitivo por ano/mês (maior valor de compra por número de pedidos).
+# Consulta 4: estado com maior poder aquisitivo por ano/mês (maior valor de compra por número de pedidos).
 def get_top_state_by_purchasing_power(year, month):
     query = """
         SELECT Cliente.customer_state, 
@@ -73,7 +73,7 @@ def get_top_state_by_purchasing_power(year, month):
         result = connection.execute(text(query), {"year": year, "month": month})
         return result.fetchone()
 
-# Consulta: meses do ano com maior volume de compras.
+# Consulta 5: meses do ano com maior volume de compras.
 def get_top_months_by_volume(year):
     query = """
         SELECT EXTRACT(MONTH FROM order_purchase_timestamp) AS month, COUNT(*) AS total_compras
@@ -86,7 +86,7 @@ def get_top_months_by_volume(year):
         result = connection.execute(text(query), {"year": year})
         return result.fetchall()
 
-# Consulta: valor médio de compras efetuadas por clientes de certa cidade.
+# Consulta 6: valor médio de compras efetuadas por clientes de certa cidade.
 def get_avg_purchase_by_city(city):
     query = """
         SELECT AVG(order_items_dataset.price + order_items_dataset.freight_value) AS avg_value
@@ -99,7 +99,7 @@ def get_avg_purchase_by_city(city):
         result = connection.execute(text(query), {"city": city})
         return result.fetchone()
 
-# Consulta: valor médio de compras efetuadas por clientes de certo estado.
+# Consulta 7: valor médio de compras efetuadas por clientes de certo estado.
 def get_avg_purchase_by_state(state):
     query = """
         SELECT AVG(order_items_dataset.price + order_items_dataset.freight_value) AS avg_value
@@ -112,7 +112,7 @@ def get_avg_purchase_by_state(state):
         result = connection.execute(text(query), {"state": state})
         return result.fetchone()
 
-# Consulta: total de pedidos realizados por cidade.
+# Consulta 8: total de pedidos realizados por cidade.
 def get_total_orders_by_city():
     query = """
         SELECT Cliente.customer_city, COUNT(DISTINCT olist_orders_dataset.order_id) AS total_pedidos
@@ -125,7 +125,7 @@ def get_total_orders_by_city():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: total de pedidos realizados por estado.
+# Consulta 9: total de pedidos realizados por estado.
 def get_total_orders_by_state():
     query = """
         SELECT Cliente.customer_state, COUNT(DISTINCT olist_orders_dataset.order_id) AS total_pedidos
@@ -138,7 +138,7 @@ def get_total_orders_by_state():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: total de vendas por categoria de produto.
+# Consulta 10: total de vendas por categoria de produto.
 def get_total_sales_by_category():
     query = """
         SELECT Produto.product_category_name, SUM(order_items_dataset.price + order_items_dataset.freight_value) AS total_vendas
@@ -152,7 +152,7 @@ def get_total_sales_by_category():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: média de avaliação dos produtos por categoria.
+# Consulta 11: média de avaliação dos produtos por categoria.
 def get_avg_review_by_category():
     query = """
         SELECT Produto.product_category_name, AVG(Review.review_score) AS avg_review
@@ -167,7 +167,7 @@ def get_avg_review_by_category():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: número de pedidos por faixa de preço (baixo, médio, alto).
+# Consulta 12: número de pedidos por faixa de preço (baixo, médio, alto).
 def get_orders_by_price_range():
     query = """
         SELECT
@@ -186,7 +186,7 @@ def get_orders_by_price_range():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: número de produtos vendidos por cidade.
+# Consulta 13: número de produtos vendidos por cidade.
 def get_products_sold_by_city():
     query = """
         SELECT Cliente.customer_city, SUM(order_items_dataset.order_item_id) AS total_produtos_vendidos
@@ -200,7 +200,7 @@ def get_products_sold_by_city():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: vendas totais por tipo de pagamento (cartão de crédito, boleto, etc.).
+# Consulta 14: vendas totais por tipo de pagamento (cartão de crédito, boleto, etc.).
 def get_sales_by_payment_type():
     query = """
         SELECT payment_type, SUM(payment_value) AS total_vendas
@@ -212,7 +212,7 @@ def get_sales_by_payment_type():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: número de pedidos entregues com atraso (data de entrega estimada vs. data real).
+# Consulta 15: número de pedidos entregues com atraso (data de entrega estimada vs. data real).
 def get_delayed_orders():
     query = """
         SELECT COUNT(*) AS total_atrasos
@@ -223,7 +223,7 @@ def get_delayed_orders():
         result = connection.execute(text(query))
         return result.fetchone()
 
-# Consulta: vendas totais por vendedor.
+# Consulta 16: vendas totais por vendedor.
 def get_sales_by_seller():
     query = """
         SELECT seller_id, SUM(order_items_dataset.price + order_items_dataset.freight_value) AS total_vendas
@@ -236,7 +236,7 @@ def get_sales_by_seller():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: vendas totais por estado.
+# Consulta 17: vendas totais por estado.
 def get_sales_by_state():
     query = """
         SELECT Cliente.customer_state, SUM(order_items_dataset.price + order_items_dataset.freight_value) AS total_vendas
@@ -250,7 +250,7 @@ def get_sales_by_state():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: total de produtos comprados por cliente.
+# Consulta 18: total de produtos comprados por cliente.
 def get_total_products_by_customer():
     query = """
         SELECT Cliente.customer_id, COUNT(order_items_dataset.order_item_id) AS total_produtos
@@ -264,7 +264,7 @@ def get_total_products_by_customer():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: média de parcelas dos pagamentos.
+# Consulta 19: média de parcelas dos pagamentos.
 def get_avg_payment_installments():
     query = """
         SELECT AVG(payment_installments) AS avg_parcelas
@@ -274,7 +274,7 @@ def get_avg_payment_installments():
         result = connection.execute(text(query))
         return result.fetchone()
 
-# Consulta: número de pedidos por tipo de pagamento e estado.
+# Consulta 20: número de pedidos por tipo de pagamento e estado.
 def get_orders_by_payment_type_and_state():
     query = """
         SELECT Cliente.customer_state, olist_order_payments_dataset.payment_type, COUNT(DISTINCT olist_orders_dataset.order_id) AS total_pedidos
@@ -288,7 +288,7 @@ def get_orders_by_payment_type_and_state():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: média de avaliação dos vendedores por estado.
+# Consulta 21: média de avaliação dos vendedores por estado.
 def get_avg_seller_reviews_by_state():
     query = """
         SELECT Cliente.customer_state, AVG(Review.review_score) AS avg_review_score
@@ -304,7 +304,7 @@ def get_avg_seller_reviews_by_state():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: produtos mais comprados por faixa de preço.
+# Consulta 22: produtos mais comprados por faixa de preço.
 def get_top_products_by_price_range():
     query = """
         SELECT CASE 
@@ -321,7 +321,7 @@ def get_top_products_by_price_range():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: total de vendas por estado e cidade.
+# Consulta 23: total de vendas por estado e cidade.
 def get_total_sales_by_state_and_city():
     query = """
         SELECT Cliente.customer_state, Cliente.customer_city, SUM(order_items_dataset.price + order_items_dataset.freight_value) AS total_sales
@@ -335,7 +335,7 @@ def get_total_sales_by_state_and_city():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: média de tempo de entrega por estado.
+# Consulta 24: média de tempo de entrega por estado.
 def get_avg_delivery_time_by_state():
     query = """
         SELECT Cliente.customer_state, AVG(olist_orders_dataset.order_delivered_customer_date - olist_orders_dataset.order_purchase_timestamp) AS avg_delivery_time
@@ -349,7 +349,7 @@ def get_avg_delivery_time_by_state():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: número de pedidos por status (pendente, aprovado, cancelado, etc.).
+# Consulta 25: número de pedidos por status (pendente, aprovado, cancelado, etc.).
 def get_orders_by_status():
     query = """
         SELECT olist_orders_dataset.order_status, COUNT(*) AS total_orders
@@ -361,7 +361,7 @@ def get_orders_by_status():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: vendas totais por cada tipo de frete.
+# Consulta 26: vendas totais por cada tipo de frete.
 def get_total_sales_by_freight_type():
     query = """
         SELECT olist_order_items_dataset.freight_value, COUNT(*) AS total_orders
@@ -373,7 +373,7 @@ def get_total_sales_by_freight_type():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: produtos com mais comentários e avaliações.
+# Consulta 27: produtos com mais comentários e avaliações.
 def get_most_reviewed_products():
     query = """
         SELECT product_id, COUNT(DISTINCT review_id) AS total_reviews
@@ -386,7 +386,7 @@ def get_most_reviewed_products():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: número de produtos vendidos por vendedor e estado.
+# Consulta 28: número de produtos vendidos por vendedor e estado.
 def get_products_sold_by_seller_and_state():
     query = """
         SELECT Seller.seller_id, Seller.seller_state, COUNT(*) AS total_products
@@ -399,7 +399,7 @@ def get_products_sold_by_seller_and_state():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: top 10 cidades com mais vendas.
+# Consulta 29: top 10 cidades com mais vendas.
 def get_top_cities_by_sales():
     query = """
         SELECT Cliente.customer_city, SUM(order_items_dataset.price + order_items_dataset.freight_value) AS total_sales
@@ -414,7 +414,7 @@ def get_top_cities_by_sales():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: vendas por categoria de produto, ordenadas por maior faturamento.
+# Consulta 30: vendas por categoria de produto, ordenadas por maior faturamento.
 def get_sales_by_product_category():
     query = """
         SELECT olist_products_dataset.product_category_name, SUM(order_items_dataset.price) AS total_vendas
@@ -427,7 +427,7 @@ def get_sales_by_product_category():
         result = connection.execute(text(query))
         return result.fetchall()
     
-# Consulta: número de itens vendidos por vendedor.
+# Consulta 31: número de itens vendidos por vendedor.
 def get_items_sold_by_seller():
     query = """
         SELECT olist_sellers_dataset.seller_id, COUNT(order_items_dataset.product_id) AS total_itens
@@ -440,7 +440,7 @@ def get_items_sold_by_seller():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: comparação entre número de pedidos aprovados e pedidos cancelados por cidade.
+# Consulta 32: comparação entre número de pedidos aprovados e pedidos cancelados por cidade.
 def get_order_status_comparison_by_city():
     query = """
         SELECT Cliente.customer_city,
@@ -455,7 +455,7 @@ def get_order_status_comparison_by_city():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: top 10 produtos mais vendidos em termos de unidades.
+# Consulta 33: top 10 produtos mais vendidos em termos de unidades.
 def get_top_10_most_sold_products():
     query = """
         SELECT Produto.product_id, Produto.product_category_name, SUM(Item.order_item_id) AS total_unidades
@@ -469,7 +469,7 @@ def get_top_10_most_sold_products():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: produtos com maior valor de frete.
+# Consulta 34: produtos com maior valor de frete.
 def get_products_with_highest_freight_value():
     query = """
         SELECT Produto.product_id, Produto.product_category_name, MAX(Item.freight_value) AS max_frete
@@ -482,7 +482,7 @@ def get_products_with_highest_freight_value():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: média de preço dos produtos por categoria.
+# Consulta 35: média de preço dos produtos por categoria.
 def get_avg_price_by_category():
     query = """
         SELECT Produto.product_category_name, AVG(Item.price) AS media_preco
@@ -495,7 +495,7 @@ def get_avg_price_by_category():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: número de pedidos entregues dentro do prazo, por cidade.
+# Consulta 36: número de pedidos entregues dentro do prazo, por cidade.
 def get_on_time_orders_by_city():
     query = """
         SELECT Cliente.customer_city, COUNT(*) AS pedidos_no_prazo
@@ -509,7 +509,7 @@ def get_on_time_orders_by_city():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: top 10 clientes com maior volume de compras.
+# Consulta 37: top 10 clientes com maior volume de compras.
 def get_top_10_customers_by_sales_volume():
     query = """
         SELECT Cliente.customer_id, Cliente.customer_city, SUM(Item.price) AS total_compras
@@ -524,7 +524,7 @@ def get_top_10_customers_by_sales_volume():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: média de tempo de entrega por cidade.
+# Consulta 38: média de tempo de entrega por cidade.
 def get_avg_delivery_time_by_city():
     query = """
         SELECT Cliente.customer_city, AVG(DATE_PART('day', Pedido.order_delivered_customer_date - Pedido.order_purchase_timestamp)) AS media_tempo_entrega
@@ -538,7 +538,7 @@ def get_avg_delivery_time_by_city():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: média de avaliação por produto e categoria.
+# Consulta 39: média de avaliação por produto e categoria.
 def get_avg_review_by_product_and_category():
     query = """
         SELECT Produto.product_id, Produto.product_category_name, AVG(Review.review_score) AS media_avaliacao
@@ -552,7 +552,7 @@ def get_avg_review_by_product_and_category():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: total de vendas por tipo de pagamento (dividido por cidade).
+# Consulta 40: total de vendas por tipo de pagamento (dividido por cidade).
 def get_sales_by_payment_type_and_city():
     query = """
         SELECT Cliente.customer_city, Pagamento.payment_type, SUM(Pagamento.payment_value) AS total_vendas
@@ -566,7 +566,7 @@ def get_sales_by_payment_type_and_city():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: comparação entre vendas de produtos físicos e digitais.
+# Consulta 41: comparação entre vendas de produtos físicos e digitais.
 def get_comparison_physical_vs_digital_products():
     query = """
         SELECT Produto.product_category_name, COUNT(*) AS total_vendas
@@ -580,7 +580,7 @@ def get_comparison_physical_vs_digital_products():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: número de pedidos por intervalo de datas (diário, semanal, mensal).
+# Consulta 42: número de pedidos por intervalo de datas (diário, semanal, mensal).
 def get_orders_by_date_range(interval):
     query = f"""
         SELECT DATE_TRUNC('{interval}', Pedido.order_purchase_timestamp) AS periodo, COUNT(*) AS total_pedidos
@@ -592,7 +592,7 @@ def get_orders_by_date_range(interval):
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: vendas totais por período do ano (por exemplo, verão, inverno, datas promocionais).
+# Consulta 43: vendas totais por período do ano (por exemplo, verão, inverno, datas promocionais).
 def get_sales_by_season():
     query = """
         SELECT EXTRACT(MONTH FROM Pedido.order_purchase_timestamp) AS mes, SUM(Item.price) AS total_vendas
@@ -605,7 +605,7 @@ def get_sales_by_season():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: top 5 categorias de produto mais compradas no último mês.
+# Consulta 44: top 5 categorias de produto mais compradas no último mês.
 def get_top_5_categories_last_month():
     query = """
         SELECT Produto.product_category_name, COUNT(Item.product_id) AS total_compras
@@ -620,7 +620,7 @@ def get_top_5_categories_last_month():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: número de pedidos por estado e cidade, dividido por status do pedido.
+# Consulta 45: número de pedidos por estado e cidade, dividido por status do pedido.
 def get_orders_by_state_city_and_status():
     query = """
         SELECT Cliente.customer_state, Cliente.customer_city, Pedido.order_status, COUNT(*) AS total_pedidos
@@ -633,7 +633,7 @@ def get_orders_by_state_city_and_status():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: total de vendas por tipo de produto (eletrônicos, roupas, etc.).
+# Consulta 46: total de vendas por tipo de produto (eletrônicos, roupas, etc.).
 def get_total_sales_by_product_type():
     query = """
         SELECT Produto.product_category_name, SUM(Item.price * Item.order_item_id) AS total_vendas
@@ -646,7 +646,7 @@ def get_total_sales_by_product_type():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: média de avaliações por cidade.
+# Consulta 47: média de avaliações por cidade.
 def get_avg_reviews_by_city():
     query = """
         SELECT Cliente.customer_city, AVG(Review.review_score) AS media_avaliacoes
@@ -660,7 +660,7 @@ def get_avg_reviews_by_city():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: total de vendas por categoria de produto e vendedor.
+# Consulta 48: total de vendas por categoria de produto e vendedor.
 def get_total_sales_by_category_and_seller():
     query = """
         SELECT Produto.product_category_name, Vendedor.seller_id, SUM(Item.price * Item.order_item_id) AS total_vendas
@@ -674,7 +674,7 @@ def get_total_sales_by_category_and_seller():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: número de pedidos por status de pagamento.
+# Consulta 49: número de pedidos por status de pagamento.
 def get_number_of_orders_by_payment_status():
     query = """
         SELECT Payment.payment_type, COUNT(Pedido.order_id) AS num_pedidos
@@ -687,7 +687,7 @@ def get_number_of_orders_by_payment_status():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta: categorias mais vendidas em um intervalo de datas.
+# Consulta 50: categorias mais vendidas em um intervalo de datas.
 def get_top_categories_by_sales_in_date_range(start_date, end_date):
     query = """
         SELECT Produto.product_category_name, SUM(Item.price * Item.order_item_id) AS total_vendas
