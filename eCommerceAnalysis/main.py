@@ -3,6 +3,6 @@ from queries import best_products
 
 def main():
     engine = import_data()
-    best_products(engine, 'SP')
+    # Escolher alguma consulta aqui para testar
 
 main()
