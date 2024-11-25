@@ -133,3 +133,5 @@ def import_data():
     import_csv_to_postgres('olist_products_dataset.csv', 'olist_products_dataset', engine)
     import_csv_to_postgres('olist_sellers_dataset.csv', 'olist_sellers_dataset', engine)
     import_csv_to_postgres('product_category_name_translation.csv', 'product_category_name_translation', engine)
+
+    return engine
