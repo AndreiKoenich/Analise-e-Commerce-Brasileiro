@@ -1,5 +1,24 @@
 from sqlalchemy import create_engine, text
 
+# Consulta: produtos mais bem avaliados
+def best_products(engine):
+    state = state.upper()
+    query = """
+        SELECT Produto.product_category_name, avg(Review.review_score)
+        FROM olist_products_dataset Produto
+        JOIN olist_order_items_dataset USING (product_id)
+        JOIN olist_orders_dataset USING (order_id)
+        JOIN olist_order_reviews_dataset Review USING (order_id)
+        GROUP BY Produto.product_category_name
+        ORDER BY avg(Review.review_score) DESC
+    """
+
+    with engine.connect() as connection:
+        result = connection.execute(text(query), {"state": state})
+
+    for row in result:
+        print(row)
+
 # Consulta: produtos mais bem avaliados em uma região (all-time).
 def best_products(engine, state):
     state = state.upper()
@@ -8,7 +27,6 @@ def best_products(engine, state):
         FROM olist_products_dataset Produto
         JOIN olist_order_items_dataset USING (product_id)
         JOIN olist_orders_dataset USING (order_id)
-        JOIN olist_customers_dataset Cliente USING (customer_id)
         JOIN olist_order_reviews_dataset Review USING (order_id)
         WHERE Cliente.customer_state = :state AND Produto.product_category_name IS NOT NULL
         GROUP BY Produto.product_category_name
