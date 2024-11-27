@@ -1,9 +1,9 @@
 import pandas as pd
+from sqlalchemy import text
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 
 DATABASE_URL = 'postgresql://postgres:123456@localhost/e_commerce'
-DATABASE_NAME = 'e_commerce'
 
 def create_tables(engine):
     create_table_queries = [
@@ -107,20 +107,21 @@ def create_tables(engine):
         """
     ]
 
-    for query in create_table_queries:
-        engine.execute(query)
+    with engine.connect() as connection:
+        for query in create_table_queries:
+            connection.execute(text(query))
     print("Todas as nove tabelas foram criadas com sucesso.")
 
 def import_csv_to_postgres(csv_file, table_name, engine):
     df = pd.read_csv(csv_file)
     df.to_sql(table_name, engine, if_exists='replace', index=False)
-    print(f'Dados inseridos com sucesso na tabela {table_name}')
+    print(f'Dados inseridos com sucesso na tabela {table_name}.')
 
 def import_data():
     engine = create_engine(DATABASE_URL)
     if not database_exists(engine.url):
         create_database(engine.url)
-    print(f"Banco de dados {DATABASE_NAME} inicializado com sucesso.")
+    print(f"Banco de dados e_commerce inicializado com sucesso.")
 
     create_tables(engine)
     

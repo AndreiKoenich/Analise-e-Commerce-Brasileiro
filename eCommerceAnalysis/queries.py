@@ -20,7 +20,7 @@ def best_products(engine):
         print(row)
 
 # Consulta 2: produtos mais bem avaliados em uma região (all-time).
-def best_products(engine, state):
+def best_products_region(engine, state):
     state = state.upper()
     query = """
         SELECT Produto.product_category_name, avg(Review.review_score)

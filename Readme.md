@@ -1,3 +1,15 @@
+Todos os imports utilizados:
+
+```
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import streamlit as st
+from sqlalchemy import text
+from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
+```
+
 Consultas implementadas:
 
 ```
