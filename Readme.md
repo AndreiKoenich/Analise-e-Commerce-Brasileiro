@@ -54,7 +54,7 @@ Consulta 39: média de avaliação por produto e categoria.
 Consulta 41: comparação entre vendas de produtos físicos e digitais.
 Consulta 50: categorias mais vendidas em um intervalo de datas.
 
-VENDEDORES:
+CONSULTAS SOBRE VENDEDORES:
 
 Consulta 16: vendas totais por vendedor.
 Consulta 21: média de avaliação dos vendedores por estado.
