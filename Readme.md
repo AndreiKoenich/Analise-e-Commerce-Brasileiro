@@ -13,7 +13,8 @@ from sqlalchemy_utils import database_exists, create_database
 Consultas implementadas:
 
 ```
-Pedidos:
+CONSULTAS SOBRE PEDIDOS:
+
 Consulta 3: categorias mais compradas em um ano/mês.
 Consulta 4: estado com maior poder aquisitivo por ano/mês (maior valor de compra por número de pedidos).
 Consulta 5: meses do ano com maior volume de compras.
@@ -28,13 +29,17 @@ Consulta 36: número de pedidos entregues dentro do prazo, por cidade.
 Consulta 42: número de pedidos por intervalo de datas (diário, semanal, mensal).
 Consulta 45: número de pedidos por estado e cidade, dividido por status do pedido.
 Consulta 49: número de pedidos por status de pagamento.
-Clientes:
+
+CONSULTAS SOBRE CLIENTES:
+
 Consulta 6: valor médio de compras efetuadas por clientes de certa cidade.
 Consulta 7: valor médio de compras efetuadas por clientes de certo estado.
 Consulta 18: total de produtos comprados por cliente.
 Consulta 37: top 10 clientes com maior volume de compras.
 Consulta 47: média de avaliações por cidade.
-Produtos:
+
+CONSULTAS SOBRE PRODUTOS:
+
 Consulta 1: produtos mais bem avaliados.
 Consulta 2: produtos mais bem avaliados em uma região (all-time).
 Consulta 10: total de vendas por categoria de produto.
@@ -48,7 +53,9 @@ Consulta 35: média de preço dos produtos por categoria.
 Consulta 39: média de avaliação por produto e categoria.
 Consulta 41: comparação entre vendas de produtos físicos e digitais.
 Consulta 50: categorias mais vendidas em um intervalo de datas.
-Vendedores:
+
+VENDEDORES:
+
 Consulta 16: vendas totais por vendedor.
 Consulta 21: média de avaliação dos vendedores por estado.
 Consulta 28: número de produtos vendidos por vendedor e estado.
