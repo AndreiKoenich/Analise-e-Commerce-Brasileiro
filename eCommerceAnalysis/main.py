@@ -1,6 +1,6 @@
 from startDatabase import import_data
 from queries import best_products
-from dashboard import start_dashboard
+from startDashboard import start_dashboard
 import streamlit as st
 
 def main():
