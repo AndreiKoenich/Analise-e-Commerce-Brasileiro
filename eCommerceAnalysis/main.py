@@ -1,5 +1,4 @@
 from startDatabase import import_data
-from queries import best_products
 from startDashboard import start_dashboard
 import streamlit as st
 
