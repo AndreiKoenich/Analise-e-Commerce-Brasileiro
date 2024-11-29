@@ -73,7 +73,7 @@ def show_top_state_by_purchasing_power(engine):
 
 def show_orders_dashboard(engine):
     show_get_top_categories(engine)
-    #show_top_state_by_purchasing_power(engine)
+    show_top_state_by_purchasing_power(engine)
 
 # Consulta 5: meses do ano com maior volume de compras.
 # Consulta 8: total de pedidos realizados por cidade.
