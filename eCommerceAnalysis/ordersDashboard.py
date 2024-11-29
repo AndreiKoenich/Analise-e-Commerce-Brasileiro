@@ -3,10 +3,11 @@ import streamlit as st
 import plotly.express as px
 from sqlalchemy import text
 from ordersQueries import *
+from utils import estado_dict
 
 # Consulta 3: categorias mais compradas em um ano/mês.
 def show_get_top_categories(engine):
-    st.markdown("<h2 style='text-align: center;'>Análise de Pedidos</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;'>Categorias Mais Compradas</h2>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
@@ -35,8 +36,8 @@ def show_get_top_categories(engine):
 # Consulta 4: estado com maior poder aquisitivo por ano/mês (maior valor de compra por número de pedidos).
 def show_top_state_by_purchasing_power(engine):
     st.markdown("<h2 style='text-align: center;'>Estado com Maior Poder Aquisitivo</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 18px;'>(maior valor de compra por número de pedidos)</p>", unsafe_allow_html=True)
 
-    # Seletores de ano e mês com keys únicos
     col1, col2 = st.columns(2)
     with col1:
         selected_year = st.selectbox(
@@ -53,16 +54,17 @@ def show_top_state_by_purchasing_power(engine):
             key="select_month_top_state"
         )
 
-    # Executa a consulta e obtém os resultados
     result = get_top_state_by_purchasing_power(engine, selected_year, selected_month)
 
     if result:
-        state, avg_value = result
-        avg_value = f"R${avg_value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")  # Formato monetário brasileiro
+        state_sigla, avg_value = result
+        state_full_name = estado_dict.get(state_sigla, state_sigla)  
+
+        avg_value = f"R${avg_value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         st.markdown(
             f"""
             <div style="text-align: center; padding: 20px; border: 1px solid # Ccc; border-radius: 10px; background-color: #f9f9f9;">
-                <h3 style="color: #4CAF50;">{state}</h3>
+                <h3 style="color: #4CAF50;">{state_full_name}</h3>
                 <p><strong>Valor Médio por Pedido:</strong> {avg_value}</p>
             </div>
             """,
