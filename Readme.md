@@ -23,10 +23,10 @@ Consulta 8: total de pedidos realizados por cidade.
 Consulta 9: total de pedidos realizados por estado.
 Consulta 12: número de pedidos por faixa de preço (baixo, médio, alto).
 Consulta 14: vendas totais por tipo de pagamento (cartão de crédito, boleto, etc.).
-Consulta 15: número de pedidos entregues com atraso (data de entrega estimada vs. data real).
+Consulta 15: número de pedidos entregues com atraso (data de entrega estimada vs. data real) em um determinado ano.
 Consulta 17: vendas totais por estado.
 Consulta 19: média de parcelas dos pagamentos.
-Consulta 20: número de pedidos por tipo de pagamento e estado.
+Consulta 20: número de pedidos por tipo de pagamento.
 Consulta 24: média de tempo de entrega por estado.
 Consulta 25: número de pedidos por status (pendente, aprovado, cancelado, etc.).
 Consulta 26: vendas totais por cada tipo de frete.

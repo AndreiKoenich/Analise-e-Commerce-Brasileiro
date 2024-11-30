@@ -36,11 +36,12 @@ def get_top_state_by_purchasing_power(engine, year, month):
         return result.fetchone()
 
 # Consulta 5: meses do ano com maior volume de compras.
-def get_top_months_by_volume(year):
+def get_top_months_by_volume(engine, year):
     query = """
-        SELECT EXTRACT(MONTH FROM order_purchase_timestamp) AS month, COUNT(*) AS total_compras
+        SELECT EXTRACT(MONTH FROM order_purchase_timestamp::timestamp) AS month, 
+               COUNT(*) AS total_compras
         FROM olist_orders_dataset
-        WHERE EXTRACT(YEAR FROM order_purchase_timestamp) = :year
+        WHERE EXTRACT(YEAR FROM order_purchase_timestamp::timestamp) = :year
         GROUP BY month
         ORDER BY total_compras DESC;
     """
@@ -49,7 +50,7 @@ def get_top_months_by_volume(year):
         return result.fetchall()
 
 # Consulta 8: total de pedidos realizados por cidade.
-def get_total_orders_by_city():
+def get_total_orders_by_city(engine):
     query = """
         SELECT Cliente.customer_city, COUNT(DISTINCT olist_orders_dataset.order_id) AS total_pedidos
         FROM olist_customers_dataset Cliente
@@ -62,7 +63,7 @@ def get_total_orders_by_city():
         return result.fetchall()
 
 # Consulta 9: total de pedidos realizados por estado.
-def get_total_orders_by_state():
+def get_total_orders_by_state(engine):
     query = """
         SELECT Cliente.customer_state, COUNT(DISTINCT olist_orders_dataset.order_id) AS total_pedidos
         FROM olist_customers_dataset Cliente
@@ -74,14 +75,13 @@ def get_total_orders_by_state():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta 12: número de pedidos por faixa de preço (baixo, médio, alto).
-def get_orders_by_price_range():
+def get_orders_by_price_range(engine, low_price, high_price):
     query = """
         SELECT
             CASE
-                WHEN (price + freight_value) < 50 THEN 'Baixo'
-                WHEN (price + freight_value) BETWEEN 50 AND 200 THEN 'Médio'
-                WHEN (price + freight_value) > 200 THEN 'Alto'
+                WHEN (price + freight_value) < :low_price THEN 'Baixo'
+                WHEN (price + freight_value) BETWEEN :low_price AND :high_price THEN 'Médio'
+                WHEN (price + freight_value) > :high_price THEN 'Alto'
             END AS faixa_preco,
             COUNT(DISTINCT olist_orders_dataset.order_id) AS total_pedidos
         FROM olist_order_items_dataset
@@ -90,11 +90,11 @@ def get_orders_by_price_range():
         ORDER BY total_pedidos DESC;
     """
     with engine.connect() as connection:
-        result = connection.execute(text(query))
+        result = connection.execute(text(query), {"low_price": low_price, "high_price": high_price})
         return result.fetchall()
 
 # Consulta 14: vendas totais por tipo de pagamento (cartão de crédito, boleto, etc.).
-def get_sales_by_payment_type():
+def get_sales_by_payment_type(engine):
     query = """
         SELECT payment_type, SUM(payment_value) AS total_vendas
         FROM olist_order_payments_dataset
@@ -105,21 +105,26 @@ def get_sales_by_payment_type():
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta 15: número de pedidos entregues com atraso (data de entrega estimada vs. data real).
-def get_delayed_orders():
+# Consulta 15: número de pedidos entregues com atraso (data de entrega estimada vs. data real) em um determinado ano.
+def get_delayed_orders_by_year_and_month(engine, year, month):
     query = """
-        SELECT COUNT(*) AS total_atrasos
+        SELECT COUNT(*) AS delayed_orders
         FROM olist_orders_dataset
-        WHERE order_delivered_customer_date > order_estimated_delivery_date;
+        WHERE EXTRACT(YEAR FROM order_estimated_delivery_date::timestamp) = :year
+            AND EXTRACT(YEAR FROM order_estimated_delivery_date::timestamp) = :month
+        AND order_delivered_customer_date > order_estimated_delivery_date
     """
+    
     with engine.connect() as connection:
-        result = connection.execute(text(query))
-        return result.fetchone()
+        result = connection.execute(text(query), {"year": year, "month": month})
+        delayed_orders = result.scalar() 
+    
+    return delayed_orders
 
 # Consulta 17: vendas totais por estado.
-def get_sales_by_state():
+def get_sales_by_state(engine):
     query = """
-        SELECT Cliente.customer_state, SUM(order_items_dataset.price + order_items_dataset.freight_value) AS total_vendas
+        SELECT Cliente.customer_state, SUM(olist_order_items_dataset.price + olist_order_items_dataset.freight_value) AS total_vendas
         FROM olist_customers_dataset Cliente
         JOIN olist_orders_dataset USING (customer_id)
         JOIN olist_order_items_dataset ON olist_orders_dataset.order_id = olist_order_items_dataset.order_id
@@ -140,13 +145,15 @@ def get_avg_payment_installments():
         result = connection.execute(text(query))
         return result.fetchone()
 
-# Consulta 20: número de pedidos por tipo de pagamento e estado.
-def get_orders_by_payment_type_and_state():
+# Consulta 20: número de pedidos por tipo de pagamento.
+def get_orders_by_payment_type_and_state(engine):
     query = """
-        SELECT Cliente.customer_state, olist_order_payments_dataset.payment_type, COUNT(DISTINCT olist_orders_dataset.order_id) AS total_pedidos
+        SELECT Cliente.customer_state, 
+               olist_order_payments_dataset.payment_type, 
+               COUNT(olist_orders_dataset.order_id) AS total_pedidos
         FROM olist_customers_dataset Cliente
-        JOIN olist_orders_dataset USING (customer_id)
-        JOIN olist_order_payments_dataset USING (order_id)
+        JOIN olist_orders_dataset ON Cliente.customer_id = olist_orders_dataset.customer_id
+        JOIN olist_order_payments_dataset ON olist_orders_dataset.order_id = olist_order_payments_dataset.order_id
         GROUP BY Cliente.customer_state, olist_order_payments_dataset.payment_type
         ORDER BY Cliente.customer_state, total_pedidos DESC;
     """
@@ -155,7 +162,7 @@ def get_orders_by_payment_type_and_state():
         return result.fetchall()
 
 # Consulta 24: média de tempo de entrega por estado.
-def get_avg_delivery_time_by_state():
+def get_avg_delivery_time_by_state(engine):
     query = """
         SELECT Cliente.customer_state, AVG(olist_orders_dataset.order_delivered_customer_date - olist_orders_dataset.order_purchase_timestamp) AS avg_delivery_time
         FROM olist_customers_dataset Cliente
@@ -169,7 +176,7 @@ def get_avg_delivery_time_by_state():
         return result.fetchall()
 
 # Consulta 25: número de pedidos por status (pendente, aprovado, cancelado, etc.).
-def get_orders_by_status():
+def get_orders_by_status(engine):
     query = """
         SELECT olist_orders_dataset.order_status, COUNT(*) AS total_orders
         FROM olist_orders_dataset
@@ -181,7 +188,7 @@ def get_orders_by_status():
         return result.fetchall()
 
 # Consulta 26: vendas totais por cada tipo de frete.
-def get_total_sales_by_freight_type():
+def get_total_sales_by_freight_type(engine):
     query = """
         SELECT olist_order_items_dataset.freight_value, COUNT(*) AS total_orders
         FROM olist_order_items_dataset
