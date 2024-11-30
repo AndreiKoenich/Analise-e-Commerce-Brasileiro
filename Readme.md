@@ -29,8 +29,8 @@ Consulta 19: média de parcelas dos pagamentos.
 Consulta 20: número de pedidos por tipo de pagamento.
 Consulta 24: média de tempo de entrega por estado.
 Consulta 25: número de pedidos por status (pendente, aprovado, cancelado, etc.).
-Consulta 26: vendas totais por cada tipo de frete.
-Consulta 29: top 10 cidades com mais vendas.
+Consulta 26: vendas totais por cada valor de frete.
+Consulta 29: top 10 cidades com maiores valores em vendas.
 Consulta 32: comparação entre número de pedidos aprovados e pedidos cancelados por cidade.
 Consulta 36: número de pedidos entregues dentro do prazo, por cidade.
 Consulta 38: média de tempo de entrega por cidade.

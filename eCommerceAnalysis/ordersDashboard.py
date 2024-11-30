@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 import matplotlib.pyplot as plt
-from sqlalchemy import text
+import datetime
 from ordersQueries import *
 from utils import estado_dict
 
@@ -11,6 +11,7 @@ def show_orders_dashboard(engine):
     show_top_state_by_purchasing_power(engine)
     show_top_months_by_volume(engine)
     show_total_orders_by_city(engine)
+    show_on_time_orders_by_city(engine)
     show_total_orders_by_state(engine)
     show_orders_by_price_range(engine)
     show_sales_by_payment_type(engine)
@@ -18,6 +19,10 @@ def show_orders_dashboard(engine):
     show_orders_by_payment_type(engine)
     show_orders_by_status(engine)
     show_total_sales_by_freight_type(engine)
+    show_top_cities_by_sales(engine)
+    show_order_status_comparison_by_city(engine)
+    show_orders_by_date_range(engine)
+    show_orders_by_category(engine)
 
 # Consulta 3: categorias mais compradas em um ano/mês.
 def show_get_top_categories(engine):
@@ -137,7 +142,7 @@ def show_sales_by_payment_type(engine):
 
 # Consulta 17: vendas totais por estado.
 def show_sales_by_state(engine):
-    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Vendas Totais por Estado</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Valores Totais em Vendas por Estado</h2>", unsafe_allow_html=True)
     data = get_sales_by_state(engine)
     df = pd.DataFrame(data, columns=["Estado", "Total Vendas"])
     st.bar_chart(df.set_index("Estado")["Total Vendas"])
@@ -157,25 +162,95 @@ def show_orders_by_status(engine):
     df = pd.DataFrame(data, columns=["Order Status", "Total Orders"])
     st.bar_chart(df.set_index("Order Status")["Total Orders"])
 
-# Consulta 26: vendas totais por cada tipo de frete.
+# Consulta 26: vendas totais por cada valor de frete.
 def show_total_sales_by_freight_type(engine):
     st.markdown("<h2 style='text-align: center; font-size: 26px;'>Vendas Totais por Cada Valor de Frete</h2>", unsafe_allow_html=True)
     data = get_total_sales_by_freight_type(engine)
     df = pd.DataFrame(data, columns=["Freight Type", "Total Orders"])
     st.bar_chart(df.set_index("Freight Type")["Total Orders"])
 
-# Consulta 29: top 10 cidades com mais vendas.
+# Consulta 29: top 10 cidades com maiores valores em vendas.
+def show_top_cities_by_sales(engine):
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Top 10 Cidades com Mais Valores em Vendas</h2>", unsafe_allow_html=True)
+    data = get_top_cities_by_sales(engine)
+    df = pd.DataFrame(data, columns=["City", "Total Sales"])
+    st.bar_chart(df.set_index("City")["Total Sales"])
+
 # Consulta 32: comparação entre número de pedidos aprovados e pedidos cancelados por cidade.
-# Consulta 36: número de pedidos entregues dentro do prazo, por cidade.
-# Consulta 38: média de tempo de entrega por cidade.
-# Consulta 40: total de vendas por tipo de pagamento (dividido por cidade).
+def show_order_status_comparison_by_city(engine):
+    st.markdown("<h2 style='text-align: center; font-size: 24px;'>Comparação entre Pedidos Aprovados e Cancelados por Cidade</h2>", unsafe_allow_html=True)
+    all_cities_query = """
+        SELECT DISTINCT Cliente.customer_city
+        FROM olist_customers_dataset Cliente
+        ORDER BY Cliente.customer_city;
+    """
+    with engine.connect() as connection:
+        all_cities = connection.execute(text(all_cities_query)).fetchall()
+    cities = [row[0] for row in all_cities]
+
+    selected_city = st.selectbox("Selecione uma cidade:", cities)
+    
+    if selected_city:
+        data = get_order_status_comparison_for_city(engine, selected_city)
+        if data:
+            chart_data = pd.DataFrame({
+                "Status": ["Aprovados", "Não Aprovados"],
+                "Total": [data[0], data[1]]
+            })
+            st.bar_chart(chart_data.set_index("Status")["Total"])
+        else:
+            st.write("Nenhum dado encontrado para a cidade selecionada.")
+
+# Consulta 36: número de pedidos entregues dentro do prazo, para uma cidade específica.
+def show_on_time_orders_by_city(engine):
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Número de Pedidos Entregues Dentro do Prazo por Cidade</h2>", unsafe_allow_html=True)
+    data = get_on_time_orders_by_city(engine)
+    df = pd.DataFrame(data, columns=["City", "On Time Orders"])
+    selected_city = st.selectbox("Selecione a cidade", df["City"].unique(), key="select_city_on_time_orders")
+    city_data = df[df["City"] == selected_city]
+    on_time_orders = city_data["On Time Orders"].values[0]
+    st.markdown(f"O número de pedidos entregues dentro do prazo na cidade de {selected_city} é: **{on_time_orders}**")
+
 # Consulta 42: número de pedidos por intervalo de datas (diário, semanal, mensal).
-# Consulta 43: vendas totais por período do ano (por exemplo, verão, inverno, datas promocionais).
-# Consulta 44: top 5 categorias de produto mais compradas no último mês.
-# Consulta 45: número de pedidos por estado e cidade, dividido por status do pedido.
+def show_orders_by_date_range(engine):
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Número de Pedidos por Intervalo de Datas</h2>", unsafe_allow_html=True)
+
+    min_date = datetime.date(2016, 1, 1)
+    max_date = datetime.date(2018, 12, 31)
+    
+    start_date = st.date_input("Selecione a data inicial", min_value=min_date, max_value=max_date)
+    end_date = st.date_input("Selecione a data final", min_value=min_date, max_value=max_date)
+
+    if start_date and end_date:
+        if start_date > end_date:
+            st.error("A data inicial não pode ser posterior à data final.")
+        else:
+            data = get_orders_by_date_range(engine, start_date, end_date)
+            total_orders = sum(order[1] for order in data)  # Somando os pedidos no intervalo selecionado
+            st.write(f"Número total de pedidos entre {start_date} e {end_date}: {total_orders}")
+
 # Consulta 46: total de vendas por tipo de produto (eletrônicos, roupas, etc.).
-# Consulta 49: número de pedidos por status de pagamento.
+def show_orders_by_category(engine):
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Número de Pedidos por Categoria</h2>", unsafe_allow_html=True)
+    
+    data = get_total_sales_by_product_type(engine)
+    categories = [row[0] for row in data]
+    
+    category = st.selectbox("Selecione a categoria de produto", categories)
+    
+    if category:
+        category_data = [row for row in data if row[0] == category]
+        if category_data:
+            st.write(f"Número total de pedidos para a categoria '{category}': {category_data[0][1]}")
+        else:
+            st.write(f"Nenhum pedido encontrado para a categoria '{category}'.")
 
 # Consulta 15: número de pedidos entregues com atraso (data de entrega estimada vs. data real) em um determinado ano.
 # Consulta 19: média de parcelas dos pagamentos.
 # Consulta 24: média de tempo de entrega por estado.
+# Consulta 38: média de tempo de entrega por cidade.
+# Consulta 40: total de vendas por tipo de pagamento (dividido por cidade).
+# Consulta 44: top 5 categorias de produto mais compradas no último mês.
+# Consulta 49: número de pedidos por status de pagamento.
+# Consulta 43: vendas totais por período do ano (por exemplo, verão, inverno, datas promocionais).
+# Consulta 45: número de pedidos por estado e cidade, dividido por status do pedido.
