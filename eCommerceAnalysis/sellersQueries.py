@@ -29,32 +29,6 @@ def get_avg_seller_reviews_by_state(engine):
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta 28: número de produtos vendidos por vendedor e estado.
-def get_products_sold_by_seller_and_state(engine):
-    query = """
-        SELECT Seller.seller_id, Seller.seller_state, COUNT(*) AS total_products
-        FROM olist_order_items_dataset
-        JOIN olist_sellers_dataset Seller USING (seller_id)
-        GROUP BY Seller.seller_id, Seller.seller_state
-        ORDER BY total_products DESC;
-    """
-    with engine.connect() as connection:
-        result = connection.execute(text(query))
-        return result.fetchall()
-
-# Consulta 30: vendas por categoria de produto, ordenadas por maior faturamento.
-def get_sales_by_product_category(engine):
-    query = """
-        SELECT olist_products_dataset.product_category_name, SUM(order_items_dataset.price) AS total_vendas
-        FROM olist_products_dataset
-        JOIN order_items_dataset USING (product_id)
-        GROUP BY olist_products_dataset.product_category_name
-        ORDER BY total_vendas DESC;
-    """
-    with engine.connect() as connection:
-        result = connection.execute(text(query))
-        return result.fetchall()
-
 # Consulta 31: número de itens vendidos por vendedor.
 def get_items_sold_by_seller(engine):
     query = """
@@ -63,20 +37,6 @@ def get_items_sold_by_seller(engine):
         JOIN olist_order_items_dataset USING (seller_id)
         GROUP BY olist_sellers_dataset.seller_id
         ORDER BY total_itens DESC;
-    """
-    with engine.connect() as connection:
-        result = connection.execute(text(query))
-        return result.fetchall()
-
-# Consulta 48: total de vendas por categoria de produto e vendedor.
-def get_total_sales_by_category_and_seller(engine):
-    query = """
-        SELECT Produto.product_category_name, Vendedor.seller_id, SUM(Item.price * Item.order_item_id) AS total_vendas
-        FROM olist_products_dataset Produto
-        JOIN olist_order_items_dataset Item USING (product_id)
-        JOIN olist_sellers_dataset Vendedor USING (seller_id)
-        GROUP BY Produto.product_category_name, Vendedor.seller_id
-        ORDER BY total_vendas DESC;
     """
     with engine.connect() as connection:
         result = connection.execute(text(query))
@@ -95,16 +55,3 @@ def get_top_seller_states(engine):
         result = connection.execute(text(query))
         return result.fetchall()
 
-# Consulta 53: valor total obtido pelos vendedores por categoria.
-def get_total_sales_by_category(engine):
-    query = """
-        SELECT p.product_category_name AS category_name,
-               SUM(oi.price + oi.freight_value) AS total_sales
-        FROM olist_order_items_dataset oi
-        JOIN olist_products_dataset p ON oi.product_id = p.product_id
-        GROUP BY p.product_category_name
-        ORDER BY total_sales DESC;
-    """
-    with engine.connect() as connection:
-        result = connection.execute(text(query))
-        return result.fetchall()

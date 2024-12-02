@@ -7,7 +7,6 @@ from ordersQueries import *
 from utils import estado_dict
 
 def show_orders_dashboard(engine):
-    show_get_top_categories(engine)
     show_top_state_by_purchasing_power(engine)
     show_top_months_by_volume(engine)
     show_total_orders_by_city(engine)
@@ -23,34 +22,6 @@ def show_orders_dashboard(engine):
     show_order_status_comparison_by_city(engine)
     show_orders_by_date_range(engine)
     show_orders_by_category(engine)
-
-# Consulta 3: categorias mais compradas em um ano/mês.
-def show_get_top_categories(engine):
-    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Categorias Mais Compradas</h2>", unsafe_allow_html=True)
-
-    col1, col2 = st.columns(2)
-    with col1:
-        selected_year = st.selectbox("Selecione o Ano", [2016, 2017, 2018], index=1)
-    with col2:
-        selected_month = st.selectbox("Selecione o Mês", list(range(1, 13)), format_func=lambda x: f"{x:02d}")
-
-    data = get_top_categories(engine, selected_year, selected_month)
-    df = pd.DataFrame(data, columns=["Categoria", "Total de Compras"])
-
-    if df.empty:
-        st.markdown("<p style='text-align: center;'>Nenhum dado encontrado para o período selecionado.</p>", unsafe_allow_html=True)
-    else:
-        fig = px.bar(
-            df,
-            x="Categoria",
-            y="Total de Compras",
-            title=f"Top 10 Categorias Mais Compradas - {selected_month:02d}/{selected_year}",
-            text="Total de Compras",
-        )
-        fig.update_layout(title_x=0.5, xaxis_title="Categorias", yaxis_title="Total de Compras")
-        st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-        st.plotly_chart(fig, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
 
 # Consulta 4: estado com maior poder aquisitivo por ano/mês (maior valor de compra por número de pedidos).
 def show_top_state_by_purchasing_power(engine):
@@ -244,13 +215,3 @@ def show_orders_by_category(engine):
             st.write(f"Número total de pedidos para a categoria '{category}': {category_data[0][1]}")
         else:
             st.write(f"Nenhum pedido encontrado para a categoria '{category}'.")
-
-# Consulta 15: número de pedidos entregues com atraso (data de entrega estimada vs. data real) em um determinado ano.
-# Consulta 19: média de parcelas dos pagamentos.
-# Consulta 24: média de tempo de entrega por estado.
-# Consulta 38: média de tempo de entrega por cidade.
-# Consulta 40: total de vendas por tipo de pagamento (dividido por cidade).
-# Consulta 44: top 5 categorias de produto mais compradas no último mês.
-# Consulta 49: número de pedidos por status de pagamento.
-# Consulta 43: vendas totais por período do ano (por exemplo, verão, inverno, datas promocionais).
-# Consulta 45: número de pedidos por estado e cidade, dividido por status do pedido.

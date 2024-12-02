@@ -10,7 +10,6 @@ def show_sellers_dashboard(engine):
     show_avg_seller_reviews_by_state(engine)
     show_items_sold_by_seller(engine)
     show_total_sales_by_seller(engine)
-    show_total_sales_by_category(engine)
 
 # Consulta 52: os dez estados com o maior número de vendedores.
 def show_top_seller_states(engine):
@@ -61,20 +60,3 @@ def show_total_sales_by_seller(engine):
         else:
             st.markdown(f"Vendedor com ID {seller_id} não encontrado.")
 
-# Consulta 53: valor total obtido pelos vendedores por categoria.
-def show_total_sales_by_category(engine):
-    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Valor Total Obtido Pelos Vendedores por Categoria</h2>", unsafe_allow_html=True)
-    data = get_total_sales_by_category(engine)
-    categories = [row[0] for row in data]
-    category = st.selectbox("Selecione a categoria de produto", categories)
-    if category:
-        category_data = [row for row in data if row[0] == category]
-        if category_data:
-            st.write(f"Valor total em vendas para a categoria '{category}': R${category_data[0][1]:,.2f}")
-        else:
-            st.write(f"Nenhuma venda encontrada para a categoria '{category}'.")
-
-# Consulta 28: número de produtos vendidos por vendedor e estado.
-# Consulta 30: vendas por categoria de produto, ordenadas por maior faturamento.
-# Consulta 31: número de itens vendidos por vendedor.
-# Consulta 48: total de vendas por categoria de produto e vendedor.

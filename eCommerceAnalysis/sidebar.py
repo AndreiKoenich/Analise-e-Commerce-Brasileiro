@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, text
 from ordersDashboard import show_orders_dashboard
 from clientsDashboard import show_clients_dashboard
 from sellersDashboard import show_sellers_dashboard
+from productsDashboard import show_products_dashboard
 
 def load_data_from_db(engine, table_name):
     query = f"SELECT * FROM {table_name}"
@@ -57,6 +58,8 @@ def showSidebar(engine):
         show_clients_dashboard(engine)
     elif st.session_state.pesquisou and categoria_selecionada == "Vendedores":
         show_sellers_dashboard(engine)
+    elif st.session_state.pesquisou and categoria_selecionada == "Produtos":
+        show_products_dashboard(engine)
 
 def display_table(engine, table_name):
     st.markdown(f"<h3 style='text-align: center;'>Tabela {table_name}</h3>", unsafe_allow_html=True)
