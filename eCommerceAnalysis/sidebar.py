@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 from sqlalchemy import create_engine, text
+from showHomepage import show_homepage
 from ordersDashboard import show_orders_dashboard
 from clientsDashboard import show_clients_dashboard
 from sellersDashboard import show_sellers_dashboard
@@ -60,6 +61,8 @@ def showSidebar(engine):
         show_sellers_dashboard(engine)
     elif st.session_state.pesquisou and categoria_selecionada == "Produtos":
         show_products_dashboard(engine)
+    elif st.session_state.pesquisou and categoria_selecionada == "Categoria...":
+        show_homepage()
 
 def display_table(engine, table_name):
     st.markdown(f"<h3 style='text-align: center;'>Tabela {table_name}</h3>", unsafe_allow_html=True)
