@@ -64,6 +64,7 @@ Consulta 54: top 10 categorias com maior valor gasto com frete.
 Consulta 55: valor total gasto com frete, para cada categoria de produto.
 Consulta 61: top 10 categorias mais adquiridas em um determinado estado.
 Consulta 62: quantidade de vezes que produtos de uma categoria foram adquiridos em cada estado.
+Consulta 63: as dez categorias mais adquiridas.
 
 CONSULTAS NÃO UTILIZADAS:
 
