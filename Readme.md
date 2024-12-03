@@ -40,6 +40,19 @@ Consulta 18: total de produtos comprados por cliente.
 Consulta 37: top 10 clientes com maior volume de compras.
 Consulta 47: média de avaliações dos clientes por cidade.
 Consulta 51: média de avaliações dos clientes por estado.
+Consulta 53: número de clientes por cidade.
+Consulta 56: top 10 cidades com maior quantidade de clientes.
+Consulta 57: número total de clientes em cada estado.
+
+CONSULTAS SOBRE VENDEDORES:
+
+Consulta 16: valor total em vendas por vendedor.
+Consulta 21: média de avaliação dos vendedores por estado.
+Consulta 31: número de itens vendidos por vendedor.
+Consulta 52: quantidade total de vendedores por estado.
+Consulta 58: quantidade total de vendedores por cidade.
+Consulta 59: top 10 cidades com maior quantidade de vendedores.
+Consulta 60: quantidade de vendedores por categoria de produto.
 
 CONSULTAS SOBRE PRODUTOS:
 
@@ -49,13 +62,8 @@ Consulta 10: total de vendas por categoria de produto.
 Consulta 11: média de avaliação dos produtos por categoria.
 Consulta 54: top 10 categorias com maior valor gasto com frete.
 Consulta 55: valor total gasto com frete, para cada categoria de produto.
-
-CONSULTAS SOBRE VENDEDORES:
-
-Consulta 16: valor total em vendas por vendedor.
-Consulta 21: média de avaliação dos vendedores por estado.
-Consulta 31: número de itens vendidos por vendedor.
-Consulta 52: os dez estados com o maior número de vendedores.
+Consulta 61: top 10 categorias mais adquiridas em um determinado estado.
+Consulta 62: quantidade de vezes que produtos de uma categoria foram adquiridos em cada estado.
 
 CONSULTAS NÃO UTILIZADAS:
 

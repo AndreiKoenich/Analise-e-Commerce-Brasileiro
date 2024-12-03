@@ -86,3 +86,41 @@ def get_avg_reviews_by_state(engine):
     with engine.connect() as connection:
         result = connection.execute(text(query))
         return result.fetchall()
+
+# Consulta 53: quantidade de clientes por cidade.
+def get_clients_count_by_city(engine):
+    query = """
+        SELECT Cliente.customer_city AS cidade, COUNT(Cliente.customer_id) AS total_clientes
+        FROM olist_customers_dataset Cliente
+        GROUP BY Cliente.customer_city
+        ORDER BY Cliente.customer_city;
+    """
+    with engine.connect() as connection:
+        result = connection.execute(text(query))
+        return result.fetchall()
+
+# Consulta 56: top 10 cidades com maior quantidade de clientes.
+def get_top_10_cities_by_client_count(engine):
+    query = """
+        SELECT Cliente.customer_city AS cidade, COUNT(Cliente.customer_id) AS total_clientes
+        FROM olist_customers_dataset Cliente
+        GROUP BY Cliente.customer_city
+        ORDER BY total_clientes DESC
+        LIMIT 10;
+    """
+    with engine.connect() as connection:
+        result = connection.execute(text(query))
+        return result.fetchall()
+
+# Consulta 57: número total de clientes em cada estado.
+def get_total_clients_by_state(engine):
+    query = """
+        SELECT Cliente.customer_state AS estado, 
+               COUNT(Cliente.customer_id) AS total_clientes
+        FROM olist_customers_dataset Cliente
+        GROUP BY Cliente.customer_state
+        ORDER BY total_clientes DESC;
+    """
+    with engine.connect() as connection:
+        result = connection.execute(text(query))
+        return result.fetchall()

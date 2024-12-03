@@ -80,7 +80,7 @@ def show_top_months_by_volume(engine):
 
 # Consulta 8: total de pedidos realizados por cidade.
 def show_total_orders_by_city(engine):
-    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Total de Pedidos Realizados por Cidade</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Número de Pedidos Realizados por Cidade</h2>", unsafe_allow_html=True)
     data = get_total_orders_by_city(engine)
     df = pd.DataFrame(data, columns=["City", "Total Orders"])
     selected_city = st.selectbox("Selecione a cidade", df["City"].unique())
@@ -90,7 +90,7 @@ def show_total_orders_by_city(engine):
 
 # Consulta 9: total de pedidos realizados por estado.
 def show_total_orders_by_state(engine):
-    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Total de Pedidos Realizados por Estado</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Número de Pedidos Realizados por Estado</h2>", unsafe_allow_html=True)
     data = get_total_orders_by_state(engine)
     df = pd.DataFrame(data, columns=["State", "Total Orders"])
     st.bar_chart(df.set_index("State")["Total Orders"])
@@ -135,14 +135,14 @@ def show_orders_by_status(engine):
 
 # Consulta 26: vendas totais por cada valor de frete.
 def show_total_sales_by_freight_type(engine):
-    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Vendas Totais por Cada Valor de Frete</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Valores Totais em Vendas por Cada Valor de Frete</h2>", unsafe_allow_html=True)
     data = get_total_sales_by_freight_type(engine)
     df = pd.DataFrame(data, columns=["Freight Type", "Total Orders"])
     st.bar_chart(df.set_index("Freight Type")["Total Orders"])
 
 # Consulta 29: top 10 cidades com maiores valores em vendas.
 def show_top_cities_by_sales(engine):
-    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Top 10 Cidades com Mais Valores em Vendas</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>As 10 Cidades com Maiores Valores em Vendas</h2>", unsafe_allow_html=True)
     data = get_top_cities_by_sales(engine)
     df = pd.DataFrame(data, columns=["City", "Total Sales"])
     st.bar_chart(df.set_index("City")["Total Sales"])

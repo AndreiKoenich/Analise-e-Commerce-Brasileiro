@@ -6,6 +6,9 @@ import datetime
 from clientsQueries import *
 
 def show_clients_dashboard(engine):
+    show_total_clients_by_state(engine)
+    show_top_10_cities_by_client_count(engine)
+    show_clients_count_by_city(engine)
     show_avg_purchase_by_state(engine)
     show_avg_purchase_by_city(engine)
     show_top_10_customers_by_sales_volume(engine)
@@ -32,7 +35,7 @@ def show_avg_purchase_by_state(engine):
 
 # Consulta 37: top 10 clientes com maior volume de compras.
 def show_top_10_customers_by_sales_volume(engine):
-    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Top 10 Clientes com Maior Volume de Compras</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Top 10 Clientes com as Maiores Quantidades de Compras</h2>", unsafe_allow_html=True)
     data = get_top_10_customers_by_sales_volume(engine)
     df = pd.DataFrame(data, columns=["Customer ID", "Customer City", "Total Purchases"])
     df = df.sort_values(by='Total Purchases', ascending=False)
@@ -40,7 +43,7 @@ def show_top_10_customers_by_sales_volume(engine):
 
 # Consulta 18: total de produtos comprados por cliente.
 def show_total_products_by_customer(engine):
-    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Total de Produtos Comprados por Cliente</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Quantidade Total de Produtos Comprados por Cliente</h2>", unsafe_allow_html=True)
     data = get_total_products_by_customer(engine)
     df = pd.DataFrame(data, columns=["Customer ID", "Total Products"])
     
@@ -70,8 +73,34 @@ def show_avg_reviews_by_city(engine):
     data = get_avg_reviews_by_city(engine)
     df = pd.DataFrame(data, columns=["City", "Average Reviews"])
     selected_city = st.selectbox("Selecione a cidade", df["City"].unique())
-    
     city_data = df[df["City"] == selected_city]
     avg_reviews = city_data["Average Reviews"].values[0]
     st.markdown(f"A média de avaliações dos clientes na cidade de {selected_city} é: **{avg_reviews:.2f}**")
+
+# Consulta 53: número de clientes por cidade.
+def show_clients_count_by_city(engine):
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>Quantidade de Clientes por Cidade</h2>", unsafe_allow_html=True)
+    data = get_clients_count_by_city(engine)
+    df = pd.DataFrame(data, columns=["City", "Client Count"])
+    selected_city = st.selectbox("Selecione a cidade", df["City"].unique())
+    city_data = df[df["City"] == selected_city]
+    client_count = city_data["Client Count"].values[0]
+    st.markdown(f"A quantidade de clientes na cidade de {selected_city} é: {client_count}")
+
+# Consulta 56: top 10 cidades com maior quantidade de clientes.
+def show_top_10_cities_by_client_count(engine):
+    st.markdown("<h2 style='text-align: center; font-size: 26px;'>As 10 Cidades com as Maiores Quantidades de Clientes</h2>", unsafe_allow_html=True)
+    data = get_top_10_cities_by_client_count(engine)
+    df = pd.DataFrame(data, columns=["City", "Client Count"])
+    df = df.sort_values(by="Client Count", ascending=True)
+    st.bar_chart(df.set_index("City")["Client Count"])
+
+# Consulta 57: número total de clientes em cada estado.
+def show_total_clients_by_state(engine):
+    st.markdown("<h2 style='text-align: center; font-size: 24px;'>Quantidade Total de Clientes em Cada Estado</h2>", unsafe_allow_html=True)
+    data = get_total_clients_by_state(engine)
+    df = pd.DataFrame(data, columns=["State", "Total Clients"])
+    st.bar_chart(df.set_index("State")["Total Clients"])
+
+
 

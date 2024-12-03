@@ -101,3 +101,54 @@ def total_freight_value_by_category(engine):
     with engine.connect() as connection:
         result = connection.execute(text(query))
         return result.fetchall()
+
+# Consulta 61: top 10 categorias mais adquiridas em um determinado estado.
+def get_top_categories_by_state(engine, state_name):
+    query = """
+    SELECT Produto.product_category_name, COUNT(DISTINCT Orders.order_id) AS total_pedidos
+    FROM olist_products_dataset Produto
+    JOIN olist_order_items_dataset Item ON Produto.product_id = Item.product_id
+    JOIN olist_orders_dataset Orders ON Item.order_id = Orders.order_id
+    JOIN olist_customers_dataset Customer ON Orders.customer_id = Customer.customer_id
+    WHERE Customer.customer_state = :state_name
+    GROUP BY Produto.product_category_name
+    ORDER BY total_pedidos DESC
+    LIMIT 10;
+    """
+    
+    with engine.connect() as connection:
+        result = connection.execute(text(query), {"state_name": state_name})
+        return result.fetchall()
+
+# Consulta 62: quantidade de vezes que produtos de uma categoria foram adquiridos em cada estado.
+def get_sales_by_category_state(engine):
+    query = """
+    SELECT Produto.product_category_name, Customer.customer_state, COUNT(DISTINCT Orders.order_id) AS total_pedidos
+    FROM olist_products_dataset Produto
+    JOIN olist_order_items_dataset Item ON Produto.product_id = Item.product_id
+    JOIN olist_orders_dataset Orders ON Item.order_id = Orders.order_id
+    JOIN olist_customers_dataset Customer ON Orders.customer_id = Customer.customer_id
+    GROUP BY Produto.product_category_name, Customer.customer_state
+    ORDER BY Produto.product_category_name, Customer.customer_state;
+    """
+    
+    with engine.connect() as connection:
+        result = connection.execute(text(query))
+        return result.fetchall()
+
+# Consulta 63: as dez categorias mais adquiridas.
+def get_top_10_categories(engine):
+    query = """
+    SELECT Produto.product_category_name, COUNT(DISTINCT Orders.order_id) AS total_pedidos
+    FROM olist_products_dataset Produto
+    JOIN olist_order_items_dataset Item ON Produto.product_id = Item.product_id
+    JOIN olist_orders_dataset Orders ON Item.order_id = Orders.order_id
+    GROUP BY Produto.product_category_name
+    ORDER BY total_pedidos DESC
+    LIMIT 10;
+    """
+    
+    with engine.connect() as connection:
+        result = connection.execute(text(query))
+        return result.fetchall()
+    
