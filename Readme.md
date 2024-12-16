@@ -1,3 +1,9 @@
+Link da base de dados no Kaggle:
+
+```
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce/data
+```
+
 Todos os imports utilizados:
 
 ```
