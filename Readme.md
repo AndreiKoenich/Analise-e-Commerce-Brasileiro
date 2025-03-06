@@ -1,3 +1,8 @@
+Este projeto foi desenvolvido na disciplina de Projeto de Bancos de Dados. O objetivo deste projeto é a construção de uma interface
+gráfica que permita, por meio da utilização de Python e Streamlit, observar informações relacionadas com o e-commerce brasileiro, utilizando
+PostgreSQL para armazenar e recuperar os dados referentes a uma base de dados (obtida no Kaggle) que revela informações de compras
+realizadas entre os anos de 2016 e 2018.
+
 Link da base de dados no Kaggle:
 
 ```
